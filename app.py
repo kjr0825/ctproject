@@ -1,35 +1,30 @@
 import streamlit as st
-import streamlit.components.v1 as htmlviewer  # HTML viewer 모듈 추가
 
-st.title('This is  Juri Webapp!!')
+# 페이지 설정 (wide로 설정해서 화면 넓게)
+st.set_page_config(
+    page_title="Juri Webapp",
+    layout="wide"
+)
 
-with open('./index.html', 'r', encoding='utf-8') as f:
-    html = f.read()
-    f.close()
+# 타이틀
+st.title("This is Juri Webapp!!")
 
-col1, col2 = st.columns((4,1))
+# 드롭다운 박스 3개 (Content 1, 2, 3)
+with st.expander("Content #1..."):
+    st.write("여기에 첫 번째 콘텐츠 내용을 입력하세요.")
 
-with col1:
-    # Content #1
-    with st.expander('Content #1...'):
-        url = 'https://www.youtube.com/watch?v=XyEOEBsa8I4'
-        st.info('Content..')
-        st.video(url)
+with st.expander("Content #2..."):
+    st.write("여기에 두 번째 콘텐츠 내용을 입력하세요.")
 
-    # Content #2
-    with st.expander('Content #2...'):
-        htmlviewer.html(html, height=1000, scrolling=True)
+with st.expander("Content #3..."):
+    st.write("여기에 세 번째 콘텐츠 내용을 입력하세요.")
 
-    # ✅ Content #3 (새로 추가됨!)
-    with st.expander('Content #3...'):
-        st.subheader("추가된 콘텐츠 영역")
-        st.write("이곳에 원하는 설명, 이미지, 위젯 등을 넣을 수 있어요.")
-        st.text_input("예: 이름 입력창")
-        st.button("클릭해보기")
+# Tips 드롭다운
+with st.expander("Tips.."):
+    st.write("여기에 팁이나 참고자료를 입력하세요.")
 
-with col2:
-    with st.expander('Tips..'):
-        st.info('Tips..')
-
-st.markdown('<hr>', unsafe_allow_html=True)
-st.write('<font color="BLUE">(c)copyright. all rights reserved by skykang</font>', unsafe_allow_html=True)
+# Footer (아래 저작권 표시)
+st.markdown(
+    "<br><hr><p style='text-align:center; color:blue;'>(c)copyright. all rights reserved by skykang</p>",
+    unsafe_allow_html=True
+)
