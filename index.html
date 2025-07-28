@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>CT 사고력으로 자리 배치 문제 해결</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; line-height: 1.6; }
+    h1 { color: #2a7; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-button {
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      background: #eee;
+      cursor: pointer;
+    }
+    .tab-button.active {
+      background: #2a7;
+      color: #fff;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+      border: 1px solid #ccc;
+      padding: 20px;
+      background: #fafafa;
+    }
+    .tab-content.active { display: block; }
+
+    .box { border: 1px solid #ccc; padding: 15px; margin-top: 10px; background: #fff; }
+    textarea { width: 100%; height: 80px; margin-top: 10px; }
+    button { padding: 8px 12px; margin-top: 10px; cursor: pointer; }
+    .answer { margin-top: 10px; font-weight: bold; }
+    .correct { color: green; }
+    .wrong { color: red; }
+    table { border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #999; padding: 8px 12px; text-align: center; }
+    .highlight { background-color: #ffffcc; }
+  </style>
+</head>
+<body>
+
+<h1>CT 사고력으로 자리 배치 문제 해결</h1>
+
+<!-- 탭 메뉴 -->
+<div class="tabs">
+  <div class="tab-button active" onclick="openTab('decompose', event)">🧩 문제 분해</div>
+  <div class="tab-button" onclick="openTab('abstract', event)">🔍 추상화</div>
+  <div class="tab-button" onclick="openTab('pattern', event)">🔁 패턴 인식</div>
+  <div class="tab-button" onclick="openTab('algorithm', event)">▶ 알고리즘 설계</div>
+</div>
+
+<!-- 문제 분해 -->
+<div class="tab-content active" id="decompose">
+  <h2>🧩 문제 분해</h2>
+  <div class="box">
+    <p>아래 칸에 문제의 현재 상태와 목표 상태를 직접 적어보세요.</p>
+    <label>현재 상태:</label><br>
+    <textarea placeholder="예: 학생들의 이름만 주어져 있음. 자리 배치는 되어 있지 않음."></textarea><br>
+    <label>목표 상태:</label><br>
+    <textarea placeholder="예: 초성 규칙에 따라 학생들의 자리가 정해진 상태."></textarea>
+  </div>
+</div>
+
+<!-- 추상화 -->
+<div class="tab-content" id="abstract">
+  <h2>🔍 추상화</h2>
+  <div class="box">
+    <p><strong>자리 배치에 꼭 필요한 정보는 무엇일까요? 해당하는 항목을 고르세요.</strong></p>
+    <input type="checkbox" id="info-name" /> 학생 이름<br>
+    <input type="checkbox" id="info-initial" /> 이름의 초성<br>
+    <input type="checkbox" id="info-shoe" /> 신발 사이즈<br>
+    <input type="checkbox" id="info-color" /> 좋아하는 색<br>
+    <button onclick="checkAbstract()">정답 확인</button>
+    <div class="answer" id="abstract-result"></div>
+  </div>
+</div>
+
+<!-- 패턴 인식 -->
+<div class="tab-content" id="pattern">
+  <h2>🔁 패턴(규칙) 인식</h2>
+  <div class="box">
+    <p><strong>문제:</strong> 초성이 ㄱ~ㄷ인 학생은 어디에 앉아야 할까요?</p>
+    <input type="radio" name="pattern" value="앞줄" /> 앞줄<br>
+    <input type="radio" name="pattern" value="뒷줄" /> 뒷줄<br>
+    <input type="radio" name="pattern" value="아무데나" /> 아무데나<br>
+    <button onclick="checkPattern()">정답 확인</button>
+    <div class="answer" id="pattern-result"></div>
+  </div>
+</div>
+
+<!-- 알고리즘 설계 -->
+<div class="tab-content" id="algorithm">
+  <h2>▶ 알고리즘 문제 해결</h2>
+  <div class="box">
+    <p><strong>문제:</strong> 다음 학생 중 뒷줄 가운데 자리에 앉는 학생은 누구일까요?</p>
+    <label><input type="radio" name="algo" value="강민지" /> 강민지</label><br>
+    <label><input type="radio" name="algo" value="문재윤" /> 문재윤</label><br>
+    <label><input type="radio" name="algo" value="김서연" /> 김서연</label><br>
+    <label><input type="radio" name="algo" value="박소윤" /> 박소윤</label><br>
+    <label><input type="radio" name="algo" value="류시우" /> 류시우</label><br>
+    <label><input type="radio" name="algo" value="나은주" /> 나은주</label><br>
+    <button onclick="checkAlgo()">정답 제출</button>
+    <div class="answer" id="algo-result"></div>
+    <div style="margin-top: 20px;">
+      <h3>자리 배치표</h3>
+      <table>
+        <tr><th colspan="3">앞줄</th></tr>
+        <tr>
+          <td>강민지</td>
+          <td>김서연</td>
+          <td>나은주</td>
+        </tr>
+        <tr><th colspan="3">뒷줄</th></tr>
+        <tr>
+          <td>박소윤</td>
+          <td class="highlight">문재윤</td>
+          <td>류시우</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 탭 전환
+  function openTab(id, event) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // 추상화 정답 확인
+  function checkAbstract() {
+    const name = document.getElementById("info-name").checked;
+    const initial = document.getElementById("info-initial").checked;
+    const shoe = document.getElementById("info-shoe").checked;
+    const color = document.getElementById("info-color").checked;
+    const result = document.getElementById("abstract-result");
+
+    if (name && initial && !shoe && !color) {
+      result.innerHTML = "<span class='correct'>✅ 정답입니다!</span>";
+    } else {
+      result.innerHTML = "<span class='wrong'>❌ 다시 생각해보세요.</span>";
+    }
+  }
+
+  // 패턴 인식 정답 확인
+  function checkPattern() {
+    const selected = document.querySelector('input[name="pattern"]:checked');
+    const result = document.getElementById("pattern-result");
+    if (!selected) {
+      result.innerHTML = "<span class='wrong'>⚠ 선택지를 고르세요.</span>";
+      return;
+    }
+    if (selected.value === "앞줄") {
+      result.innerHTML = "<span class='correct'>✅ 정답입니다!</span>";
+    } else {
+      result.innerHTML = "<span class='wrong'>❌ 오답입니다.</span>";
+    }
+  }
+
+  // 알고리즘 문제 정답 확인
+  function checkAlgo() {
+    const selected = document.querySelector('input[name="algo"]:checked');
+    const result = document.getElementById("algo-result");
+    if (!selected) {
+      result.innerHTML = "<span class='wrong'>⚠ 선택지를 고르세요.</span>";
+      return;
+    }
+    if (selected.value === "문재윤") {
+      result.innerHTML = "<span class='correct'>🎉 정답입니다!</span>";
+    } else {
+      result.innerHTML = "<span class='wrong'>❌ 오답입니다. 다시 생각해보세요.</span>";
+    }
+  }
+</script>
+
+</body>
+</html>
