@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>백석 시를 통한 CT기반 감정 분석</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+        h2 {
+            margin-top: 40px;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .slider-label {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📘 백석 시를 통한 CT기반 감정 분석</h1>
+
+    <div class="section">
+        <details>
+            <summary>📖 시 원문 보기</summary>
+            <p>
+                나는 아내도 없고, 또, 아내와 같이 살던 집도 없었고 그리고 살뜰한 부모며 동생들과도 멀리 떨어져서
+                그 어느 바람 센 쓸쓸한 거리 끝에 헤메이였다.<br>
+                나는 내 슬픔과 어리석음에 놀리어 죽을 수밖에 없는 것을 느끼는 것이었다.<br>
+                내 어지러운 마음에는 슬픔이며, 한탄이며, 가련함을 잊은 차츰 앙금이 되어 가라앉고<br>
+                그 드물다는 굳고 정한 갈매나무라는 나무를 생각하는 것이었다.
+            </p>
+        </details>
+    </div>
+
+    <div class="section">
+        <h2>1. 시 구절을 읽고 감정 점수를 입력하세요</h2>
+        <p>-2: 매우 부정적, -1: 약간 부정적, 0: 중립, 1: 약간 긍정적, 2: 매우 긍정적</p>
+        <div>
+            <label class="slider-label">1. 나는 아내도 없고, 또, 아내와 같이 살던 집도 없었고 ...</label><br>
+            <input type="range" min="-2" max="2" value="0" id="score1" oninput="updateChart()">
+        </div>
+        <div>
+            <label class="slider-label">2. 나는 내 슬픔과 어리석음에 놀리어 죽을 수밖에 없는 것을 느끼는 것이었다.</label><br>
+            <input type="range" min="-2" max="2" value="0" id="score2" oninput="updateChart()">
+        </div>
+        <div>
+            <label class="slider-label">3. 내 어지러운 마음에는 슬픔이며, 한탄이며, 가련함을 잊은 차츰 앙금이 되어 가라앉고</label><br>
+            <input type="range" min="-2" max="2" value="0" id="score3" oninput="updateChart()">
+        </div>
+        <div>
+            <label class="slider-label">4. 그 드물다는 굳고 정한 갈매나무라는 나무를 생각하는 것이었다.</label><br>
+            <input type="range" min="-2" max="2" value="0" id="score4" oninput="updateChart()">
+        </div>
+        <br>
+        <button onclick="drawChart()">그래프 그리기</button>
+        <canvas id="emotionChart" width="600" height="300"></canvas>
+    </div>
+
+    <div class="section">
+        <h2>2. 나만의 시 쓰기</h2>
+        <textarea rows="5" cols="80" placeholder="자신만의 시를 작성해 보세요."></textarea><br><br>
+        <button>제출 및 감정 분석</button>
+    </div>
+
+    <div class="section">
+        <h2>3. 학생시 감정 점수 입력 및 시각화</h2>
+        <p>자신의 시를 3~4구절로 나눈 뒤, 각 구절의 감정을 -2에서 2 사이로 입력해 보세요.<br>
+        -2: 매우 부정적, -1: 약간 부정적, 0: 중립, 1: 약간 긍정적, 2: 매우 긍정적</p>
+        <div>
+            <label>1번 구절 감정 점수:</label>
+            <input type="range" min="-2" max="2" value="0" id="stu1" oninput="updateChartStudent()"><br>
+            <label>2번 구절 감정 점수:</label>
+            <input type="range" min="-2" max="2" value="0" id="stu2" oninput="updateChartStudent()"><br>
+            <label>3번 구절 감정 점수:</label>
+            <input type="range" min="-2" max="2" value="0" id="stu3" oninput="updateChartStudent()"><br>
+            <label>4번 구절 감정 점수:</label>
+            <input type="range" min="-2" max="2" value="0" id="stu4" oninput="updateChartStudent()"><br><br>
+        </div>
+        <button onclick="drawChartStudent()">학생 시 그래프 그리기</button>
+        <canvas id="studentChart" width="600" height="300"></canvas>
+    </div>
+
+    <script>
+        let chart, studentChart;
+
+        function drawChart() {
+            const ctx = document.getElementById('emotionChart').getContext('2d');
+            const data = [
+                parseInt(document.getElementById('score1').value),
+                parseInt(document.getElementById('score2').value),
+                parseInt(document.getElementById('score3').value),
+                parseInt(document.getElementById('score4').value)
+            ];
+
+            if (chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [1, 2, 3, 4],
+                    datasets: [{
+                        label: '감정 흐름',
+                        data: data,
+                        fill: true,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        tension: 0.4,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            min: -2,
+                            max: 2
+                        }
+                    }
+                }
+            });
+        }
+
+        function drawChartStudent() {
+            const ctx = document.getElementById('studentChart').getContext('2d');
+            const data = [
+                parseInt(document.getElementById('stu1').value),
+                parseInt(document.getElementById('stu2').value),
+                parseInt(document.getElementById('stu3').value),
+                parseInt(document.getElementById('stu4').value)
+            ];
+
+            if (studentChart) studentChart.destroy();
+
+            studentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [1, 2, 3, 4],
+                    datasets: [{
+                        label: '감정 흐름',
+                        data: data,
+                        fill: true,
+                        borderColor: 'blue',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        tension: 0.4,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            min: -2,
+                            max: 2
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
+    <div class="section">
+        <h2>4. 피드백</h2>
+        <p>내 시의 감정 흐름을 시각화해보며 어떤 점을 새롭게 알게 되었는가?<br>
+        시각화를 통해 자신의 표현 방식이나 감정 전달이 어떻게 나타났는지 돌아보며 자유롭게 작성해 보세요.</p>
+        <textarea rows="5" cols="80" placeholder="이 활동을 통해 새롭게 알게 된 점이나 느낀 점을 적어보세요."></textarea>
+    </div>
+</body>
+</html>
+
