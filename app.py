@@ -25,7 +25,7 @@ with col1:
     with st.expander("Content #3: 백석 시 기반 CT 감정 분석 활동"):
         st.markdown("### 🎨 백석 시 감정 분석 및 시각화 활동")
 
-        with open('baekseok_ct.html', 'r', encoding='utf-8') as f:
+        with open('baekseokct.html', 'r', encoding='utf-8') as f:
             baekseok_html = f.read()
 
         htmlviewer.html(baekseok_html, height=1100, scrolling=True)
